@@ -1,0 +1,32 @@
+{
+  "name": "phonebook",
+  "version": "0.0.1",
+  "description": "fullstack course osa3 exercise",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gittiPekka/osa3.git"
+  },
+  "keywords": [
+    "fullstack",
+    "course",
+    "exercise"
+  ],
+  "author": "PP",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gittiPekka/osa3/issues"
+  },
+  "homepage": "https://github.com/gittiPekka/osa3#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
