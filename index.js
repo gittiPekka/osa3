@@ -1,18 +1,7 @@
 const express = require('express');
 const app = express();
 
-console.log("index.js");
-
-app.get('/', (req, res) => {
-  res.send('<h1>Hello Phonebook!</h1>');
-})
-
-app.get('/api/persons', (req, res) => {
-  res.json(persons);
-})
-
-let persons = {
-    "persons": [
+let persons =  [
       {
         "name": "Arto Hellas",
         "number": "040-123456",
@@ -58,8 +47,22 @@ let persons = {
         "number": "777-888-999",
         "id": 10
       }
-    ]
-  };
+    ];
+
+
+app.get('/', (req, res) => {
+  res.send('<h1>Hello Phonebook!</h1>');
+})
+
+app.get('/api/persons', (req, res) => {
+  res.json(persons);
+})
+
+app.get('/info', (req, res) => {
+    const day = Date();
+    const numberOfPersons = persons.length;
+    res.send(`Phonebook has info for ${numberOfPersons} people<br/>${day}`);
+  })
 
 const PORT = 3001;
 app.listen(PORT, () => {
