@@ -88,13 +88,29 @@ app.delete('/api/persons/:number', (req, res) => {
     res.end();
 });
 
-app.post('/api/persons/:name/:number', (req, res) => {
-    const addPerson = {
-        name: req.params.name,
-        number: req.params.number,
-        id: Math.floor(Math.random() * 1000000000000)
-    }
-    persons.push(addPerson);
+app.post('/api/persons/:name/:number', (req, res, next) => {
+    try {
+        if (req.params.name.length < 1) {
+            throw 'name is missing!';
+        }
+        if (req.params.number.length < 1) {
+            throw 'number is missing!';
+        }
+        for (let i = 0; i < persons.length; i++) {
+            if (persons[i].name === req.params.name) {
+                throw 'Name is already in phonebook!';
+            }
+        }
+        const addPerson = {
+            name: req.params.name,
+            number: req.params.number,
+            id: Math.floor(Math.random() * 1000000000000)
+        }
+        persons.push(addPerson);
+    }catch (exception) {
+        console.error(exception);
+        next(exception);
+      }
     res.end();
 });
 const PORT = 3001;
