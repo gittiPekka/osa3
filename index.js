@@ -79,6 +79,14 @@ app.get('/api/persons/:id', (req, res) => {
     res.end();
   })
 
+app.delete('/api/persons/:number', (req, res) => {
+    for (let i = 0; i < persons.length; i++) {
+        if (req.params.number === persons[i].number) {
+            persons.splice(i, 1);
+        }
+    }
+    res.end();
+});
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
