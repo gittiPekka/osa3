@@ -64,6 +64,21 @@ app.get('/info', (req, res) => {
     res.send(`Phonebook has info for ${numberOfPersons} people<br/>${day}`);
   })
 
+app.get('/api/persons/:id', (req, res) => {
+    let result = "";
+    for (let i = 0; i < persons.length; i++) {
+        if (Number(req.params.id) === persons[i].id) {
+            result = "Number: " + persons[i].number;
+        }
+    }
+    if (result === "") {
+        res.status(404).send('404 Not found');
+    } else {
+        res.send(result);
+    }
+    res.end();
+  })
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
