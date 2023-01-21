@@ -1,8 +1,16 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const app = express();
+const cors = require('cors');
 
-app.use(morgan('tiny'));
+morgan.token('body', function getBody (req) {
+  return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+app.use(bodyParser.json());
+
 
 let persons =  [
       {
@@ -52,13 +60,10 @@ let persons =  [
       }
     ];
 
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello Phonebook!</h1>');
-})
-
-app.get('/api/persons', (req, res) => {
-  res.json(persons);
 })
 
 app.get('/info', (req, res) => {
@@ -66,6 +71,10 @@ app.get('/info', (req, res) => {
     const numberOfPersons = persons.length;
     res.send(`Phonebook has info for ${numberOfPersons} people<br/>${day}`);
   })
+
+app.get('/api/persons', (req, res) => {
+  res.json(persons);
+})
 
 app.get('/api/persons/:id', (req, res) => {
     let result = "";
@@ -91,31 +100,42 @@ app.delete('/api/persons/:number', (req, res) => {
     res.end();
 });
 
-app.post('/api/persons/:name/:number', (req, res, next) => {
-    try {
-        if (req.params.name.length < 1) {
-            throw 'name is missing!';
-        }
-        if (req.params.number.length < 1) {
-            throw 'number is missing!';
-        }
-        for (let i = 0; i < persons.length; i++) {
-            if (persons[i].name === req.params.name) {
-                throw 'Name is already in phonebook!';
-            }
-        }
-        const addPerson = {
-            name: req.params.name,
-            number: req.params.number,
-            id: Math.floor(Math.random() * 1000000000000)
-        }
-        persons.push(addPerson);
+app.post('/api/persons/', (req, res, next) => {
+  // console.log("req: ", req);
+  const body = req.body;
+  console.log("Body oli: ", body);
+  if (!body) {
+    console.log('===person missing===');
+    return res.status(400).json({ 
+      error: 'person missing' 
+    })
+  }
+  
+  try {
+      if (body.name.length < 1) {
+          throw 'name is missing!';
+      }
+      if (body.number.length < 1) {
+          throw 'number is missing!';
+      }
+      for (let i = 0; i < persons.length; i++) {
+          if (persons[i].name === body.name) {
+              throw 'Name is already in phonebook!';
+          }
+      }
+      const addPerson = {
+          name: body.name,
+          number: body.number,
+          id: Math.floor(Math.random() * 1000000000000)
+      }
+      persons.push(addPerson);
     }catch (exception) {
         console.error(exception);
         next(exception);
       }
     res.end();
 });
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
