@@ -4,13 +4,13 @@ const morgan = require('morgan');
 const app = express();
 const cors = require('cors');
 
+app.use(cors());
+app.use(express.json())
 morgan.token('body', function getBody (req) {
   return JSON.stringify(req.body)
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
-
 app.use(bodyParser.json());
-
 
 let persons =  [
       {
@@ -60,8 +60,6 @@ let persons =  [
       }
     ];
 
-app.use(cors());
-
 app.get('/', (req, res) => {
   res.send('<h1>Hello Phonebook!</h1>');
 })
@@ -101,16 +99,12 @@ app.delete('/api/persons/:number', (req, res) => {
 });
 
 app.post('/api/persons/', (req, res, next) => {
-  // console.log("req: ", req);
   const body = req.body;
-  console.log("Body oli: ", body);
   if (!body) {
-    console.log('===person missing===');
     return res.status(400).json({ 
       error: 'person missing' 
     })
   }
-  
   try {
       if (body.name.length < 1) {
           throw 'name is missing!';
@@ -129,10 +123,12 @@ app.post('/api/persons/', (req, res, next) => {
           id: Math.floor(Math.random() * 1000000000000)
       }
       persons.push(addPerson);
+      res.send(addPerson);
     }catch (exception) {
         console.error(exception);
         next(exception);
       }
+    
     res.end();
 });
 
